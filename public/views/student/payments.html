@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Payments | CampusHub</title>
+    <link rel="stylesheet" href="../../css/globals.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            flex-grow: 1;
+            padding: 2rem 3rem;
+        }
+
+        .sidebar {
+            width: 280px;
+            position: fixed;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.9);
+            border-right: 1px solid var(--glass-border);
+            padding: 2rem 1.5rem;
+        }
+
+        .payment-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 1rem;
+            margin-top: 2rem;
+        }
+
+        .payment-table th {
+            text-align: left;
+            padding: 1rem;
+            color: var(--text-muted);
+            font-family: var(--font-heading);
+            font-size: 0.8rem;
+        }
+
+        .payment-table td {
+            padding: 1.5rem 1rem;
+            background: var(--glass-card);
+            border-top: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .payment-table tr td:first-child {
+            border-left: 1px solid var(--glass-border);
+            border-radius: 12px 0 0 12px;
+        }
+
+        .payment-table tr td:last-child {
+            border-right: 1px solid var(--glass-border);
+            border-radius: 0 12px 12px 0;
+        }
+
+        .status-pill {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-pill.completed {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+        }
+
+        .status-pill.pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="logo">CAMPUS<span class="neon-text">HUB</span></div>
+        <ul style="list-style:none; padding:0; margin-top:2rem;">
+            <li><a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="resource-hub.html" class="nav-link"><i class="fas fa-book"></i> Resource Hub</a></li>
+            <li><a href="library.html" class="nav-link"><i class="fas fa-university"></i> Library Portal</a></li>
+            <li><a href="canteen.html" class="nav-link"><i class="fas fa-utensils"></i> Smart Canteen</a></li>
+            <li><a href="payments.html" class="nav-link active"><i class="fas fa-wallet"></i> Payments</a></li>
+        </ul>
+    </div>
+
+    <main class="main-content">
+        <header style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <h1>Digital <span class="neon-text">Payments</span></h1>
+                <p style="color:var(--text-muted);">Manage your library fines, canteen orders, and campus dues.</p>
+            </div>
+            <button class="btn-primary" id="payDuesBtn"><i class="fas fa-credit-card"></i> Pay Outstanding Dues</button>
+        </header>
+
+        <section style="margin-top:3rem;">
+            <h3>Payment <span class="neon-text">History</span></h3>
+            <table class="payment-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Receipt ID</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="paymentHistory">
+                    <!-- History rows loaded by JS -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="../../js/dashboard.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch('/api/payments/history', { headers: { 'x-auth-token': token } });
+                const data = await res.json();
+
+                if (res.ok) {
+                    const tbody = document.getElementById('paymentHistory');
+                    if (data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; background:none; border:none; color:var(--text-muted);">No payment records found.</td></tr>';
+                        return;
+                    }
+
+                    tbody.innerHTML = '';
+                    data.forEach(p => {
+                        tbody.innerHTML += `
+                            <tr class="animate-fade-in">
+                                <td>${new Date(p.date).toLocaleDateString()}</td>
+                                <td style="text-transform: capitalize;">${p.type.replace(/([A-Z])/g, ' $1').trim()}</td>
+                                <td class="neon-text">₹ ${p.amount}</td>
+                                <td style="font-family: monospace; color: var(--text-muted);">${p.receipt}</td>
+                                <td><span class="status-pill ${p.status}">${p.status.toUpperCase()}</span></td>
+                            </tr>
+                        `;
+                    });
+                }
+            } catch (err) { console.error(err); }
+        });
+
+        document.getElementById('payDuesBtn').addEventListener('click', async () => {
+            const amount = prompt('Enter amount to pay for campus dues:');
+            if (!amount || isNaN(amount)) return;
+
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch('/api/payments/pay', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-auth-token': token },
+                    body: JSON.stringify({ amount: parseInt(amount), type: 'campusDues' })
+                });
+
+                if (res.ok) {
+                    alert('Payment successful!');
+                    window.location.reload();
+                }
+            } catch (err) { alert('Payment failed.'); }
+        });
+    </script>
+</body>
+
+</html>

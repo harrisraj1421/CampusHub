@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Canteen | CampusHub</title>
+    <link rel="stylesheet" href="../../css/globals.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            flex-grow: 1;
+            padding: 2rem 3rem;
+        }
+
+        .sidebar {
+            width: 280px;
+            position: fixed;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.9);
+            border-right: 1px solid var(--glass-border);
+            padding: 2rem 1.5rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1.2fr;
+            gap: 2.5rem;
+            margin-top: 2rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        .nav-link.active {
+            background: var(--glass-accent);
+            color: var(--text-main);
+            border-left: 3px solid var(--primary);
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .menu-card {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-card {
+            padding: 2rem;
+            position: sticky;
+            top: 2rem;
+            height: fit-content;
+        }
+
+        .tag {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            width: fit-content;
+        }
+
+        .tag.veg {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .tag.nonveg {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--glass-border);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="logo">CAMPUS<span class="neon-text">HUB</span></div>
+        <ul style="list-style:none; padding:0; margin-top:2rem;">
+            <li><a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="resource-hub.html" class="nav-link"><i class="fas fa-book"></i> Resource Hub</a></li>
+            <li><a href="library.html" class="nav-link"><i class="fas fa-university"></i> Library Portal</a></li>
+            <li><a href="canteen.html" class="nav-link active"><i class="fas fa-utensils"></i> Smart Canteen</a></li>
+            <li><a href="payments.html" class="nav-link"><i class="fas fa-wallet"></i> Payments</a></li>
+        </ul>
+    </div>
+
+    <main class="main-content">
+        <header>
+            <h1>Smart Canteen <span class="neon-text">Pre-Order</span></h1>
+            <p style="color:var(--text-muted);">Skip the queue – order your meal and pick it up with a QR code.</p>
+        </header>
+
+        <div class="dashboard-grid">
+            <div class="menu-section">
+                <h3 style="margin-bottom:1.5rem;">Today's Menu</h3>
+                <div class="card-grid" id="menuGrid">
+                    <!-- Menu cards loaded by JS -->
+                </div>
+            </div>
+
+            <div class="cart-section">
+                <div class="glass-card cart-card">
+                    <h3 style="margin-bottom:1.5rem;"><i class="fas fa-shopping-cart"></i> Your Order</h3>
+                    <div id="cartItems">
+                        <p style="color:var(--text-muted); text-align:center;">Your cart is empty.</p>
+                    </div>
+                    <div style="margin-top:2rem; border-top:1px solid var(--glass-border); padding-top:1rem;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:1rem;">
+                            <span>Total</span>
+                            <span class="neon-text" id="cartTotal">₹ 0</span>
+                        </div>
+                        <div class="form-group" style="margin-bottom:1rem;">
+                            <label style="font-size:0.8rem; color:var(--text-muted);">Pickup Time</label>
+                            <input type="time" id="pickupTime"
+                                style="width:100%; padding:10px; background:rgba(255,255,255,0.05); border:1px solid var(--glass-border); color:white; border-radius:10px; margin-top:5px;">
+                        </div>
+                        <button class="btn-primary" style="width:100%;" id="checkoutBtn" disabled>Proceed to
+                            Pay</button>
+                    </div>
+                </div>
+
+                <div class="glass-card" style="margin-top:2rem; padding:1.5rem;">
+                    <h3><i class="fas fa-clock"></i> Crowd Prediction</h3>
+                    <p style="font-size:0.9rem; color:var(--text-muted); margin-top:1rem;">AI predicts HIGH traffic
+                        between 12:45 - 1:15 PM.</p>
+                    <div style="height:6px; background:rgba(255,255,255,0.1); border-radius:3px; margin-top:10px;">
+                        <div style="width:85%; height:100%; background:var(--error); border-radius:3px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/dashboard.js"></script>
+    <script>
+        let cart = [];
+        let menuItems = [];
+
+        async function fetchMenu() {
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch('/api/canteen/menu', { headers: { 'x-auth-token': token } });
+                menuItems = await res.json();
+                renderMenu();
+            } catch (err) { console.error(err); }
+        }
+
+        function renderMenu() {
+            const grid = document.getElementById('menuGrid');
+            grid.innerHTML = '';
+            menuItems.forEach(item => {
+                grid.innerHTML += `
+                    <div class="glass-card menu-card animate-fade-in">
+                        <span class="tag ${item.category === 'Veg' ? 'veg' : 'nonveg'}">${item.category}</span>
+                        <h4 style="margin-bottom:0.5rem;">${item.name}</h4>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:auto;">
+                            <span class="neon-text">₹ ${item.price}</span>
+                            <button class="btn-primary" style="padding:6px 15px; font-size:0.8rem;" onclick="addToCart(${item.id})">Add</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function addToCart(id) {
+            const item = menuItems.find(i => i.id === id);
+            const inCart = cart.find(i => i.id === id);
+            if (inCart) {
+                inCart.quantity += 1;
+            } else {
+                cart.push({ ...item, quantity: 1 });
+            }
+            renderCart();
+        }
+
+        function renderCart() {
+            const cartDiv = document.getElementById('cartItems');
+            const totalSpan = document.getElementById('cartTotal');
+            const checkoutBtn = document.getElementById('checkoutBtn');
+
+            if (cart.length === 0) {
+                cartDiv.innerHTML = '<p style="color:var(--text-muted); text-align:center;">Your cart is empty.</p>';
+                totalSpan.innerText = '₹ 0';
+                checkoutBtn.disabled = true;
+                return;
+            }
+
+            let total = 0;
+            cartDiv.innerHTML = '';
+            cart.forEach(item => {
+                total += item.price * item.quantity;
+                cartDiv.innerHTML += `
+                    <div class="cart-item">
+                        <div>
+                            <span>${item.name} x ${item.quantity}</span>
+                        </div>
+                        <span>₹ ${item.price * item.quantity}</span>
+                    </div>
+                `;
+            });
+
+            totalSpan.innerText = `₹ ${total}`;
+            checkoutBtn.disabled = false;
+        }
+
+        document.getElementById('checkoutBtn').addEventListener('click', async () => {
+            const pickupTime = document.getElementById('pickupTime').value;
+            if (!pickupTime) return alert('Please select a pickup time.');
+
+            const token = localStorage.getItem('token');
+            const total = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+
+            try {
+                // 1. Create Order
+                const orderRes = await fetch('/api/canteen/order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-auth-token': token },
+                    body: JSON.stringify({ items: cart, totalPrice: total, pickupTime: new Date().setHours(pickupTime.split(':')[0], pickupTime.split(':')[1]) })
+                });
+                const orderData = await orderRes.json();
+
+                if (orderRes.ok) {
+                    // 2. Simulate Payment
+                    const payRes = await fetch('/api/payments/pay', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'x-auth-token': token },
+                        body: JSON.stringify({ amount: total, type: 'canteenBill', orderId: orderData._id })
+                    });
+
+                    if (payRes.ok) {
+                        alert('Order placed successfully! Check your dashboard for the QR code.');
+                        cart = [];
+                        renderCart();
+                        window.location.href = 'dashboard.html';
+                    }
+                }
+            } catch (err) { alert('Failed to place order.'); }
+        });
+
+        document.addEventListener('DOMContentLoaded', fetchMenu);
+    </script>
+</body>
+
+</html>

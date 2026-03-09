@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sustainability Marketplace | CampusHub</title>
+    <link rel="stylesheet" href="../../css/globals.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            flex-grow: 1;
+            padding: 2rem 3rem;
+        }
+
+        .sidebar {
+            width: 280px;
+            position: fixed;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.9);
+            border-right: 1px solid var(--glass-border);
+            padding: 2rem 1.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        .nav-link.active {
+            background: var(--glass-accent);
+            color: var(--text-main);
+            border-left: 3px solid var(--primary);
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .item-card {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .type-badge {
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .type-exchange {
+            background: rgba(14, 165, 233, 0.2);
+            color: #0ea5e9;
+        }
+
+        .type-borrow {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+
+        .type-donate {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="logo">CAMPUS<span class="neon-text">HUB</span></div>
+        <ul style="list-style:none; padding:0; margin-top:2rem;">
+            <li><a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="resource-hub.html" class="nav-link"><i class="fas fa-book"></i> Resource Hub</a></li>
+            <li><a href="library.html" class="nav-link"><i class="fas fa-university"></i> Library Portal</a></li>
+            <li><a href="canteen.html" class="nav-link"><i class="fas fa-utensils"></i> Smart Canteen</a></li>
+            <li><a href="collab.html" class="nav-link"><i class="fas fa-users"></i> Collaboration</a></li>
+            <li><a href="marketplace.html" class="nav-link active"><i class="fas fa-leaf"></i> Marketplace</a></li>
+            <li><a href="payments.html" class="nav-link"><i class="fas fa-wallet"></i> Payments</a></li>
+        </ul>
+    </div>
+
+    <main class="main-content">
+        <header style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <h1>Sustainability <span class="neon-text">Marketplace</span></h1>
+                <p style="color:var(--text-muted);">Share, borrow, or donate resources – promote a circular campus
+                    economy.</p>
+            </div>
+            <button class="btn-primary" onclick="toggleModal()"><i class="fas fa-plus"></i> Share Item</button>
+        </header>
+
+        <section class="grid-3" id="itemGrid">
+            <!-- Dynamic items -->
+        </section>
+    </main>
+
+    <div class="modal" id="shareModal">
+        <div class="glass-card" style="width: 500px; padding: 2.5rem;">
+            <h2>Share an <span class="neon-text">Item</span></h2>
+            <form id="shareForm" style="margin-top:2rem;">
+                <div style="margin-bottom:1.2rem;">
+                    <label style="display:block; margin-bottom:0.5rem; color:var(--text-muted);">Title</label>
+                    <input type="text" id="iTitle" required
+                        style="width:100%; padding:10px; background:rgba(255,255,255,0.05); border:1px solid var(--glass-border); color:white; border-radius:8px;">
+                </div>
+                <div style="margin-bottom:1.2rem; display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div>
+                        <label style="display:block; margin-bottom:0.5rem; color:var(--text-muted);">Category</label>
+                        <select id="iCategory"
+                            style="width:100%; padding:10px; background:rgba(0,0,0,0.4); border:1px solid var(--glass-border); color:white; border-radius:8px;">
+                            <option value="Books">Books</option>
+                            <option value="Lab Kits">Lab Kits</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Stationery">Stationery</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display:block; margin-bottom:0.5rem; color:var(--text-muted);">Offer Type</label>
+                        <select id="iType"
+                            style="width:100%; padding:10px; background:rgba(0,0,0,0.4); border:1px solid var(--glass-border); color:white; border-radius:8px;">
+                            <option value="Exchange">Exchange</option>
+                            <option value="Borrow">Borrow</option>
+                            <option value="Donate">Donate</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="margin-bottom:1.2rem;">
+                    <label style="display:block; margin-bottom:0.5rem; color:var(--text-muted);">Description</label>
+                    <textarea id="iDesc" rows="3"
+                        style="width:100%; padding:10px; background:rgba(255,255,255,0.05); border:1px solid var(--glass-border); color:white; border-radius:8px;"></textarea>
+                </div>
+                <div style="display:flex; gap:1rem;">
+                    <button type="submit" class="btn-primary" style="flex-grow:1;">Post Item</button>
+                    <button type="button" class="btn-primary"
+                        style="background:transparent; border:1px solid var(--glass-border);"
+                        onclick="toggleModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../../js/dashboard.js"></script>
+    <script>
+        const shareModal = document.getElementById('shareModal');
+        const itemGrid = document.getElementById('itemGrid');
+        const shareForm = document.getElementById('shareForm');
+
+        function toggleModal() { shareModal.classList.toggle('active'); }
+
+        async function fetchItems() {
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch('/api/marketplace', { headers: { 'x-auth-token': token } });
+                const items = await res.json();
+
+                if (res.ok) {
+                    itemGrid.innerHTML = '';
+                    items.forEach(item => {
+                        const typeClass = `type-${item.type.toLowerCase()}`;
+                        itemGrid.innerHTML += `
+                            <div class="glass-card item-card animate-fade-in" style="position:relative;">
+                                <span class="type-badge ${typeClass}">${item.type}</span>
+                                <div style="color:var(--text-muted); font-size:0.75rem; margin-bottom:0.5rem;">${item.category}</div>
+                                <h3 style="margin-bottom:0.8rem;">${item.title}</h3>
+                                <p style="color:var(--text-muted); font-size:0.9rem; flex-grow:1;">${item.description}</p>
+                                <div style="margin-top:1.5rem; display:flex; justify-content:space-between; align-items:center;">
+                                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                                        <img src="${item.ownerId.profilePic || '/images/default-avatar.png'}" style="width:25px; height:25px; border-radius:50%; border:1px solid var(--primary);">
+                                        <span style="font-size:0.8rem; color:var(--text-muted);">${item.ownerId.name}</span>
+                                    </div>
+                                    <button class="btn-primary" style="padding:6px 12px; font-size:0.75rem;" onclick="contactOwner('${item.ownerId.email}', '${item.title}')">Get Item</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        shareForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const token = localStorage.getItem('token');
+            const itemData = {
+                title: document.getElementById('iTitle').value,
+                description: document.getElementById('iDesc').value,
+                category: document.getElementById('iCategory').value,
+                type: document.getElementById('iType').value,
+                campus: 'Main Campus' // Logic for user campus would be here
+            };
+
+            try {
+                const res = await fetch('/api/marketplace', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-auth-token': token },
+                    body: JSON.stringify(itemData)
+                });
+                if (res.ok) {
+                    alert('Item listed on Marketplace!');
+                    toggleModal();
+                    fetchItems();
+                }
+            } catch (err) { alert('Failed to post item'); }
+        };
+
+        function contactOwner(email, title) {
+            alert(`Contact owner at: ${email} regarding "${title}"`);
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchItems);
+    </script>
+</body>
+
+</html>

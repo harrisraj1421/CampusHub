@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusHub | AI-Powered Unified Campus Platform</title>
+    <meta name="description" content="Connect, collaborate, and manage your campus life with CampusHub. The futuristic, AI-driven ecosystem for students and faculty.">
+    <link rel="stylesheet" href="css/globals.css">
+    <style>
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero h1 {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text-main), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            max-width: 800px;
+            margin-bottom: 3rem;
+        }
+
+        .cta-container {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 4rem;
+            z-index: 100;
+            background: rgba(5, 11, 24, 0.4);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            font-family: var(--font-subheading);
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .features {
+            padding: 100px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .feature-card {
+            padding: 2.5rem;
+            transition: 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--primary);
+            box-shadow: 0 10px 40px rgba(124, 58, 237, 0.2);
+        }
+
+        .feature-card i {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .role-section {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .role-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 4rem;
+        }
+
+        .role-card {
+            padding: 2rem;
+            border-radius: 15px;
+            background: var(--glass-accent);
+            border: 1px solid var(--glass-border);
+            transition: 0.3s;
+        }
+
+        .role-card:hover {
+            background: rgba(124, 58, 237, 0.25);
+            border-color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 3rem; }
+            .hero p { font-size: 1.1rem; }
+            .nav { padding: 1rem 2rem; }
+            .nav-links { display: none; }
+        }
+    </style>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="logo">CAMPUS<span class="neon-text">HUB</span></div>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#roles">Roles</a>
+            <a href="#about">About</a>
+        </div>
+        <div>
+            <a href="views/login.html" class="btn-primary">Login</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="hero animate-fade-in">
+            <h1>UNIFY YOUR <span class="neon-text">CAMPUS</span></h1>
+            <p>The AI-powered ecosystem connecting students, faculty, and administration into one seamless digital experience. Academics, Library, Canteen, and Collaboration – all in one place.</p>
+            <div class="cta-container">
+                <a href="views/signup.html" class="btn-primary">Get Started</a>
+                <a href="#features" class="btn-primary" style="background: rgba(255, 255, 255, 0.05); color: var(--text-main); border: 1px solid var(--glass-border);">Learn More</a>
+            </div>
+        </section>
+
+        <section id="features" class="features">
+            <div class="glass-card feature-card animate-fade-in">
+                <i class="fas fa-brain"></i>
+                <h3>AI Assistant</h3>
+                <p>An integrated AI chatbot to help with library status, study suggestions, and campus queries.</p>
+            </div>
+            <div class="glass-card feature-card animate-fade-in" style="animation-delay: 0.2s;">
+                <i class="fas fa-book"></i>
+                <h3>Resource Hub</h3>
+                <p>Search books across campuses, reserve online, and access shared notes and materials.</p>
+            </div>
+            <div class="glass-card feature-card animate-fade-in" style="animation-delay: 0.4s;">
+                <i class="fas fa-utensils"></i>
+                <h3>Smart Canteen</h3>
+                <p>Pre-order meals, skip the queue, and use QR codes for hassle-free order pickup.</p>
+            </div>
+            <div class="glass-card feature-card animate-fade-in" style="animation-delay: 0.6s;">
+                <i class="fas fa-users-viewfinder"></i>
+                <h3>Collab Network</h3>
+                <p>Find teammates for hackathons, share project ideas, and map your skills to industry needs.</p>
+            </div>
+        </section>
+
+        <section id="roles" class="role-section">
+            <h2 class="animate-fade-in">Who is <span class="neon-text">CampusHub</span> For?</h2>
+            <div class="role-grid">
+                <div class="role-card animate-fade-in">
+                    <i class="fas fa-user-graduate"></i>
+                    <h4>Student</h4>
+                </div>
+                <div class="role-card animate-fade-in">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <h4>Faculty</h4>
+                </div>
+                <div class="role-card animate-fade-in">
+                    <i class="fas fa-user-shield"></i>
+                    <h4>Admin</h4>
+                </div>
+                <div class="role-card animate-fade-in">
+                    <i class="fas fa-book-reader"></i>
+                    <h4>Library</h4>
+                </div>
+                <div class="role-card animate-fade-in">
+                    <i class="fas fa-store"></i>
+                    <h4>Canteen</h4>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer style="margin-top: 100px; padding: 50px; text-align: center; border-top: 1px solid var(--glass-border);">
+        <p>&copy; 2024 CampusHub. Built for the Future.</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

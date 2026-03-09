@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Library | CampusHub</title>
+    <link rel="stylesheet" href="../../css/globals.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            flex-grow: 1;
+            padding: 2rem 3rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 2.5rem;
+        }
+
+        .book-card {
+            padding: 2rem;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .available {
+            background: var(--success);
+            color: white;
+        }
+
+        .reserved {
+            background: var(--warning);
+            color: black;
+        }
+
+        .unavailable {
+            background: var(--error);
+            color: white;
+        }
+
+        .sidebar {
+            width: 280px;
+            position: fixed;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.9);
+            border-right: 1px solid var(--glass-border);
+            padding: 2rem 1.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        .nav-link.active {
+            background: var(--glass-accent);
+            color: var(--text-main);
+            border-left: 3px solid var(--primary);
+        }
+
+        .nav-link i {
+            margin-right: 12px;
+        }
+
+        .book-search-container {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            padding: 12px 20px;
+            background: var(--glass-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-main);
+            outline: none;
+        }
+
+        .campus-select {
+            padding: 12px;
+            background: var(--glass-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-main);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="logo">CAMPUS<span class="neon-text">HUB</span></div>
+        <ul style="list-style:none; padding:0; margin-top:2rem;">
+            <li><a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="resource-hub.html" class="nav-link"><i class="fas fa-book"></i> Resource Hub</a></li>
+            <li><a href="library.html" class="nav-link active"><i class="fas fa-university"></i> Library Portal</a></li>
+            <li><a href="canteen.html" class="nav-link"><i class="fas fa-utensils"></i> Smart Canteen</a></li>
+            <li><a href="payments.html" class="nav-link"><i class="fas fa-wallet"></i> Payments</a></li>
+        </ul>
+    </div>
+
+    <main class="main-content">
+        <header>
+            <h1>Smart Library <span class="neon-text">Network</span></h1>
+            <p style="color:var(--text-muted);">Search and reserve books across all connected campuses.</p>
+        </header>
+
+        <div class="book-search-container">
+            <input type="text" id="bookSearch" class="search-input" placeholder="Search by title or author...">
+            <select id="campusFilter" class="campus-select">
+                <option value="">All Campuses</option>
+                <option value="Main Campus">Main Campus</option>
+                <option value="North Campus">North Campus</option>
+                <option value="South Campus">South Campus</option>
+            </select>
+            <select id="categoryFilter" class="campus-select">
+                <option value="">All Categories</option>
+                <option value="Engineering">Engineering</option>
+                <option value="Design">Design</option>
+                <option value="Management">Management</option>
+                <option value="Literature">Literature</option>
+            </select>
+            <button class="btn-primary" id="searchBtn"><i class="fas fa-search"></i> Search</button>
+        </div>
+
+        <div class="grid-3" id="bookGrid">
+            <!-- Books will be loaded here -->
+            <div class="glass-card book-card animate-fade-in">
+                <span class="status-badge available">Available</span>
+                <h3 style="margin-bottom:0.5rem;">C++ For Dummies</h3>
+                <p style="color:var(--text-muted); font-size:0.9rem;">By Stephen R. Davis</p>
+                <p style="font-size:0.85rem; margin:1rem 0; color:var(--accent);">Category: Engineering • Main Campus
+                </p>
+                <div style="margin-top:auto;">
+                    <button class="btn-primary" style="width:100%;">Reserve Online</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/dashboard.js"></script>
+    <script>
+        const bookGrid = document.getElementById('bookGrid');
+        const searchBtn = document.getElementById('searchBtn');
+        const bookSearchInput = document.getElementById('bookSearch');
+
+        async function fetchBooks() {
+            const token = localStorage.getItem('token');
+            const search = bookSearchInput.value;
+            const campus = document.getElementById('campusFilter').value;
+            const category = document.getElementById('categoryFilter').value;
+
+            let url = `/api/library/books?title=${search}&campus=${campus}&category=${category}`;
+
+            try {
+                const res = await fetch(url, { headers: { 'x-auth-token': token } });
+                const books = await res.json();
+
+                if (res.ok) {
+                    bookGrid.innerHTML = '';
+                    books.forEach(book => {
+                        const statusClass = book.availableCopies > 0 ? 'available' : (book.reservationQueue.length > 0 ? 'reserved' : 'unavailable');
+                        const statusText = book.availableCopies > 0 ? 'Available' : (book.reservationQueue.length > 0 ? 'In Queue' : 'Unavailable');
+
+                        bookGrid.innerHTML += `
+                            <div class="glass-card book-card animate-fade-in">
+                                <span class="status-badge ${statusClass}">${statusText}</span>
+                                <h3 style="margin-bottom:0.5rem;">${book.title}</h3>
+                                <p style="color:var(--text-muted); font-size:0.9rem;">By ${book.author}</p>
+                                <p style="font-size:0.85rem; margin:1rem 0; color:var(--accent);">Category: ${book.category || 'N/A'} • Campus: ${book.campus}</p>
+                                <div style="margin-top:auto;">
+                                    <button class="btn-primary" style="width:100%;" onclick="reserveBook('${book._id}')">Reserve Now</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+            } catch (err) {
+                console.error('Error fetching library books:', err);
+            }
+        }
+
+        async function reserveBook(bookId) {
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch(`/api/library/reserve/${bookId}`, {
+                    method: 'POST',
+                    headers: { 'x-auth-token': token }
+                });
+                const data = await res.json();
+                alert(data.message);
+                fetchBooks();
+            } catch (err) {
+                alert('Failed to reserve book');
+            }
+        }
+
+        searchBtn.addEventListener('click', fetchBooks);
+        document.addEventListener('DOMContentLoaded', fetchBooks);
+    </script>
+</body>
+
+</html>

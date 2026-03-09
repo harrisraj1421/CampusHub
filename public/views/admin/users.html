@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management | CampusHub Admin</title>
+    <link rel="stylesheet" href="../../css/globals.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            flex-grow: 1;
+            padding: 2rem 3rem;
+        }
+
+        .sidebar {
+            width: 280px;
+            position: fixed;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.9);
+            border-right: 1px solid var(--glass-border);
+            padding: 2rem 1.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        .nav-link.active {
+            background: var(--glass-accent);
+            color: var(--text-main);
+            border-left: 3px solid var(--primary);
+        }
+
+        .user-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 0.8rem;
+            margin-top: 2rem;
+        }
+
+        .user-table th {
+            text-align: left;
+            padding: 1rem;
+            color: var(--text-muted);
+            font-family: var(--font-heading);
+            font-size: 0.8rem;
+        }
+
+        .user-table td {
+            padding: 1rem;
+            background: var(--glass-card);
+            border-top: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+            font-size: 0.9rem;
+        }
+
+        .user-table tr td:first-child {
+            border-left: 1px solid var(--glass-border);
+            border-radius: 12px 0 0 12px;
+        }
+
+        .user-table tr td:last-child {
+            border-right: 1px solid var(--glass-border);
+            border-radius: 0 12px 12px 0;
+        }
+
+        .role-pill {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .role-student {
+            background: rgba(14, 165, 233, 0.1);
+            color: #0ea5e9;
+        }
+
+        .role-admin {
+            background: rgba(124, 58, 237, 0.1);
+            color: #8b5cf6;
+        }
+
+        .role-faculty {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="logo">CAMPUS<span class="neon-text">HUB</span> ADMIN</div>
+        <ul style="list-style:none; padding:0; margin-top:2rem;">
+            <li><a href="dashboard.html" class="nav-link"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+            <li><a href="users.html" class="nav-link active"><i class="fas fa-users-cog"></i> User Management</a></li>
+            <li><a href="library.html" class="nav-link"><i class="fas fa-book"></i> Library Control</a></li>
+            <li><a href="canteen.html" class="nav-link"><i class="fas fa-store"></i> Canteen Control</a></li>
+        </ul>
+    </div>
+
+    <main class="main-content">
+        <header>
+            <h1>User <span class="neon-text">Directory</span></h1>
+            <p style="color:var(--text-muted);">View and manage all students, faculty, and campus staff.</p>
+        </header>
+
+        <section>
+            <table class="user-table" id="userList">
+                <thead>
+                    <tr>
+                        <th>User Name</th>
+                        <th>Email ID</th>
+                        <th>Role</th>
+                        <th>Campus</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody">
+                    <!-- User data loaded by JS -->
+                    <p style="color:var(--text-muted);">Loading user data...</p>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="../../js/dashboard.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            const role = localStorage.getItem('role');
+            if (role !== 'admin') { window.location.href = '../../index.html'; return; }
+
+            try {
+                // Fetch Users endpoint
+                // Note: I haven't added an 'all-users' route yet. Let's create it in auth routes later.
+                // For now, let's mock the listed students.
+                const userTable = document.getElementById('userTableBody');
+                userTable.innerHTML = `
+                    <tr class="animate-fade-in">
+                        <td>Aryan Sharma</td>
+                        <td>aryan@campus.edu</td>
+                        <td><span class="role-pill role-student">Student</span></td>
+                        <td>Main Campus</td>
+                        <td><button class="btn-primary" style="padding:6px 12px; font-size:0.75rem; background:rgba(239, 68, 68, 0.15); color:#ef4444; border-color:#ef4444;">SUSPEND</button></td>
+                    </tr>
+                     <tr class="animate-fade-in" style="animation-delay:0.1s;">
+                        <td>Dr. Smith</td>
+                        <td>smith@campus.edu</td>
+                        <td><span class="role-pill role-faculty">Faculty</span></td>
+                        <td>North Campus</td>
+                        <td><button class="btn-primary" style="padding:6px 12px; font-size:0.75rem; background:rgba(239, 68, 68, 0.15); color:#ef4444; border-color:#ef4444;">SUSPEND</button></td>
+                    </tr>
+                    <tr class="animate-fade-in" style="animation-delay:0.2s;">
+                        <td>Staff Canteen</td>
+                        <td>canteen@campus.edu</td>
+                        <td><span class="role-pill">Canteen Staff</span></td>
+                        <td>Main Campus</td>
+                        <td><button class="btn-primary" style="padding:6px 12px; font-size:0.75rem; background:rgba(239, 68, 68, 0.15); color:#ef4444; border-color:#ef4444;">SUSPEND</button></td>
+                    </tr>
+                `;
+            } catch (err) { console.error(err); }
+        });
+    </script>
+</body>
+
+</html>

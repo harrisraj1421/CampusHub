@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canteen Admin | CampusHub</title>
+    <link rel="stylesheet" href="../../css/globals.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            flex-grow: 1;
+            padding: 2rem 3rem;
+        }
+
+        .sidebar {
+            width: 280px;
+            position: fixed;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.9);
+            border-right: 1px solid var(--glass-border);
+            padding: 2rem 1.5rem;
+        }
+
+        .order-card {
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 5px solid var(--primary);
+        }
+
+        .order-card.ready {
+            border-left-color: var(--success);
+        }
+
+        .order-card.picked {
+            border-left-color: var(--text-muted);
+            opacity: 0.6;
+        }
+
+        .order-card h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .order-details {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="logo">CAMPUS<span class="neon-text">HUB</span></div>
+        <ul style="list-style:none; padding:0; margin-top:2rem;">
+            <li><a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="library.html" class="nav-link"><i class="fas fa-book"></i> Library Control</a></li>
+            <li><a href="canteen.html" class="nav-link active"><i class="fas fa-store"></i> Canteen Control</a></li>
+            <li><a href="users.html" class="nav-link"><i class="fas fa-users-cog"></i> Users</a></li>
+        </ul>
+    </div>
+
+    <main class="main-content">
+        <header style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <h1>Canteen <span class="neon-text">Orders Hub</span></h1>
+                <p style="color:var(--text-muted);">Monitor live pre-orders and update their preparation status.</p>
+            </div>
+            <div
+                style="background:var(--glass-accent); padding:10px 20px; border-radius:10px; border:1px solid var(--glass-border);">
+                <span class="neon-text">LIVE ORDERS</span>
+            </div>
+        </header>
+
+        <section style="margin-top:3rem;">
+            <div id="ordersList"
+                style="display:grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 1.5rem;">
+                <!-- Live orders loaded by JS -->
+                <p style="color:var(--text-muted);">Loading active orders...</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="../../js/dashboard.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            fetchOrders();
+            setInterval(fetchOrders, 10000); // Polling for live updates
+        });
+
+        async function fetchOrders() {
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch('/api/canteen/all-orders', { headers: { 'x-auth-token': token } });
+                const orders = await res.json();
+
+                if (res.ok) {
+                    const list = document.getElementById('ordersList');
+                    list.innerHTML = '';
+                    if (orders.length === 0) list.innerHTML = '<p>No active orders.</p>';
+
+                    orders.forEach(order => {
+                        list.innerHTML += `
+                            <div class="glass-card order-card ${order.status} animate-fade-in">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <div>
+                                        <h4>${order.studentId.name} <span style="font-size:0.7rem; color:var(--accent); font-family:monospace;">#${order._id.slice(-6)}</span></h4>
+                                        <div class="order-details">
+                                            Pickup: <strong style="color:var(--text-main);">${new Date(order.pickupTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</strong><br>
+                                            Items: ${order.items.map(i => `${i.name} (${i.quantity})`).join(', ')}<br>
+                                            Bill: <strong class="neon-text">₹ ${order.totalPrice}</strong> | Pay: <span style="color:${order.paymentStatus === 'paid' ? 'var(--success)' : 'var(--error)'}">${order.paymentStatus.toUpperCase()}</span>
+                                        </div>
+                                    </div>
+                                    <div style="display:flex; flex-direction:column; gap:8px;">
+                                        ${order.status === 'pending' ? `<button class="btn-primary" onclick="updateOrder('${order._id}', 'ready')">Mark Ready</button>` : ''}
+                                        ${order.status === 'ready' ? `<button class="btn-primary" style="background:var(--success);" onclick="updateOrder('${order._id}', 'picked')">Picked Up</button>` : ''}
+                                        ${order.status === 'picked' ? `<p style="color:var(--text-muted); font-size:0.8rem;">COMPLETED</p>` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        async function updateOrder(id, status) {
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch(`/api/canteen/order/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'x-auth-token': token },
+                    body: JSON.stringify({ status })
+                });
+                if (res.ok) fetchOrders();
+            } catch (err) { alert('Failed to update order status.'); }
+        }
+    </script>
+</body>
+
+</html>

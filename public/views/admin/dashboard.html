@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | CampusHub</title>
+    <link rel="stylesheet" href="../../css/globals.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            flex-grow: 1;
+            padding: 2rem 3rem;
+        }
+
+        .sidebar {
+            width: 280px;
+            position: fixed;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.9);
+            border-right: 1px solid var(--glass-border);
+            padding: 2rem 1.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        .nav-link.active {
+            background: var(--glass-accent);
+            color: var(--text-main);
+            border-left: 3px solid var(--primary);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-top: 0.5rem;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .content-card {
+            padding: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="logo">CAMPUS<span class="neon-text">HUB</span> ADMIN</div>
+        <ul style="list-style:none; padding:0; margin-top:2rem;">
+            <li><a href="dashboard.html" class="nav-link active"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+            <li><a href="users.html" class="nav-link"><i class="fas fa-users-cog"></i> User Management</a></li>
+            <li><a href="library.html" class="nav-link"><i class="fas fa-book"></i> Library Control</a></li>
+            <li><a href="canteen.html" class="nav-link"><i class="fas fa-utensils"></i> Canteen Control</a></li>
+            <li><a href="resources.html" class="nav-link"><i class="fas fa-file-alt"></i> Moderation</a></li>
+            <li><a href="events.html" class="nav-link"><i class="fas fa-calendar-plus"></i> Events & News</a></li>
+        </ul>
+        <a href="#" id="logoutBtn" class="nav-link" style="margin-top:auto; color:var(--error);"><i
+                class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    <main class="main-content" id="adminMain">
+        <header>
+            <h1>Admin <span class="neon-text">Control Center</span></h1>
+            <p style="color:var(--text-muted);">Real-time monitoring and management of the inter-campus digital
+                ecosystem.</p>
+        </header>
+
+        <section class="stats-grid">
+            <div class="glass-card stat-card">
+                <p style="color:var(--text-muted);">Total Users</p>
+                <div class="value neon-text" id="totalUsersStat">0</div>
+            </div>
+            <div class="glass-card stat-card">
+                <p style="color:var(--text-muted);">Library Issuing</p>
+                <div class="value" id="totalBooksStat">0</div>
+            </div>
+            <div class="glass-card stat-card">
+                <p style="color:var(--text-muted);">Total Revenue</p>
+                <div class="value neon-text" id="totalRevenueStat">₹ 0</div>
+            </div>
+            <div class="glass-card stat-card">
+                <p style="color:var(--text-muted);">Reports / Flagged</p>
+                <div class="value" style="color:var(--error);">0</div>
+            </div>
+        </section>
+
+        <div class="analytics-grid">
+            <div class="glass-card content-card">
+                <h3>Campus Activity Trends</h3>
+                <div
+                    style="height: 300px; width:100%; display:flex; justify-content:center; align-items:center; color:var(--text-muted); font-family:monospace;">
+                    [ Real-time Chart Logic Placeholder: Revenue vs Users ]
+                </div>
+            </div>
+            <div class="glass-card content-card">
+                <h3>Popular Resources</h3>
+                <ul style="list-style:none; padding:0; margin-top:1.5rem;" id="popularResources">
+                    <p style="color:var(--text-muted);">Loading analytics...</p>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/dashboard.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            const role = localStorage.getItem('role');
+            if (role !== 'admin') { window.location.href = '../../index.html'; return; }
+
+            try {
+                // Fetch Stats
+                const payRes = await fetch('/api/payments/analytics', { headers: { 'x-auth-token': token } });
+                const payments = await payRes.json();
+                document.getElementById('totalRevenueStat').innerText = `₹ ${payments.total || 0}`;
+
+                // Resources (Best Downloaded)
+                const resRes = await fetch('/api/resources', { headers: { 'x-auth-token': token } });
+                const resources = await resRes.json();
+                const topRes = document.getElementById('popularResources');
+                topRes.innerHTML = '';
+                resources.slice(0, 5).forEach(r => {
+                    topRes.innerHTML += `<li style="padding:10px 0; border-bottom:1px solid var(--glass-border); display:flex; justify-content:space-between; font-size:0.9rem;">
+                        <span>${r.title}</span>
+                        <span class="neon-text">${r.downloads || 0} Dwnld</span>
+                    </li>`;
+                });
+
+                document.getElementById('totalUsersStat').innerText = '1,240'; // Mocked
+                document.getElementById('totalBooksStat').innerText = '45'; // Mocked
+            } catch (err) { console.error(err); }
+        });
+    </script>
+</body>
+
+</html>

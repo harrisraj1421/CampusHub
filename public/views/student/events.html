@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events & Hackathons | CampusHub</title>
+    <link rel="stylesheet" href="../../css/globals.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            flex-grow: 1;
+            padding: 2rem 3rem;
+        }
+
+        .sidebar {
+            width: 280px;
+            position: fixed;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.9);
+            border-right: 1px solid var(--glass-border);
+            padding: 2rem 1.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        .nav-link.active {
+            background: var(--glass-accent);
+            color: var(--text-main);
+            border-left: 3px solid var(--primary);
+        }
+
+        .grid-event {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 2.5rem;
+            margin-top: 2rem;
+        }
+
+        .event-card {
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .event-banner {
+            height: 180px;
+            width: 100%;
+            background: var(--glass-accent);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .event-info {
+            padding: 2rem;
+            flex-grow: 1;
+        }
+
+        .date-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--bg-color);
+            border: 1px solid var(--primary);
+            padding: 6px 12px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .date-badge span {
+            display: block;
+            line-height: 1.1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="logo">CAMPUS<span class="neon-text">HUB</span></div>
+        <ul style="list-style:none; padding:0; margin-top:2rem;">
+            <li><a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="resource-hub.html" class="nav-link"><i class="fas fa-book"></i> Resource Hub</a></li>
+            <li><a href="library.html" class="nav-link"><i class="fas fa-university"></i> Library Portal</a></li>
+            <li><a href="canteen.html" class="nav-link"><i class="fas fa-utensils"></i> Smart Canteen</a></li>
+            <li><a href="collab.html" class="nav-link"><i class="fas fa-users"></i> Collaboration</a></li>
+            <li><a href="events.html" class="nav-link active"><i class="fas fa-calendar-alt"></i> Events Hub</a></li>
+            <li><a href="payments.html" class="nav-link"><i class="fas fa-wallet"></i> Payments</a></li>
+        </ul>
+    </div>
+
+    <main class="main-content">
+        <header>
+            <h1>Event & <span class="neon-text">Hackathon</span> Hub</h1>
+            <p style="color:var(--text-muted);">Stay updated with the latest campus events, technical symposiums, and
+                inter-campus hackathons.</p>
+        </header>
+
+        <section class="grid-event" id="eventGrid">
+            <!-- Dynamic events -->
+            <div class="glass-card event-card animate-fade-in">
+                <div class="event-banner"><i class="fas fa-laptop-code fa-5x" style="color:var(--secondary);"></i></div>
+                <div class="date-badge">
+                    <span style="font-size:0.8rem; color:var(--text-muted);">MAR</span>
+                    <span style="font-size:1.2rem; font-weight:700;">18</span>
+                </div>
+                <div class="event-info">
+                    <h3 style="margin-bottom:0.5rem;">CineHack 2026</h3>
+                    <p style="color:var(--text-muted); font-size:0.9rem;">24-hour hackathon for building media tech
+                        solutions. 08:00 AM onwards.</p>
+                    <div style="margin-top:1.5rem; display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:0.85rem; color:var(--accent);"><i class="fas fa-map-marker-alt"></i> Main
+                            Campus IT Block</span>
+                        <button class="btn-primary" style="padding:8px 15px; font-size:0.8rem;">Register Now</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="../../js/dashboard.js"></script>
+    <script>
+        async function fetchEvents() {
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch('/api/events', { headers: { 'x-auth-token': token } });
+                const events = await res.json();
+
+                if (res.ok && events.length > 0) {
+                    const grid = document.getElementById('eventGrid');
+                    grid.innerHTML = '';
+                    events.forEach(e => {
+                        const date = new Date(e.date);
+                        const day = date.getDate();
+                        const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+
+                        grid.innerHTML += `
+                            <div class="glass-card event-card animate-fade-in">
+                                <div class="event-banner"><img src="${e.flyerUrl || '/images/default-event.png'}" style="width:100%; height:100%; object-fit:cover;"></div>
+                                <div class="date-badge">
+                                    <span style="font-size:0.8rem; color:var(--text-muted);">${month}</span>
+                                    <span style="font-size:1.2rem; font-weight:700;">${day}</span>
+                                </div>
+                                <div class="event-info">
+                                    <h3 style="margin-bottom:0.5rem;">${e.title}</h3>
+                                    <p style="color:var(--text-muted); font-size:0.9rem;">${e.description}</p>
+                                    <div style="margin-top:1.5rem; display:flex; justify-content:space-between; align-items:center;">
+                                        <span style="font-size:0.85rem; color:var(--accent);"><i class="fas fa-map-marker-alt"></i> ${e.campus}</span>
+                                        <button class="btn-primary" style="padding:8px 15px; font-size:0.8rem;" onclick="registerEvent('${e._id}')">Register Now</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        async function registerEvent(id) {
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch(`/api/events/register/${id}`, {
+                    method: 'POST',
+                    headers: { 'x-auth-token': token }
+                });
+                const data = await res.json();
+                alert(data.message);
+                fetchEvents();
+            } catch (err) { alert('Failed to register'); }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchEvents);
+    </script>
+</body>
+
+</html>
