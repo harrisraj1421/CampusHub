@@ -5,42 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CampusHub | AI-Powered Unified Campus Platform</title>
-    <meta name="description"
-        content="Connect, collaborate, and manage your campus life with CampusHub. The futuristic, AI-driven ecosystem for students and faculty.">
+    <meta name="description" content="The futuristic, AI-driven ecosystem for students and faculty.">
     <link rel="stylesheet" href="css/globals.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            position: relative;
-            z-index: 10;
-        }
-
-        .hero h1 {
-            font-size: 5rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--text-main), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 700;
-        }
-
-        .hero p {
-            font-size: 1.5rem;
-            color: var(--text-muted);
-            max-width: 800px;
-            margin-bottom: 3rem;
-        }
-
-        .cta-container {
-            display: flex;
-            gap: 1.5rem;
-        }
-
         .nav {
             position: fixed;
             top: 0;
@@ -49,109 +17,107 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.5rem 4rem;
-            z-index: 100;
-            background: rgba(5, 11, 24, 0.4);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--glass-border);
+            padding: 1rem 4rem;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-light);
         }
 
-        .logo {
-            font-family: var(--font-heading);
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            color: var(--primary);
+        .hero {
+            padding: 160px 0 100px;
+            text-align: center;
+            background: radial-gradient(circle at top, rgba(37, 99, 235, 0.05), transparent);
         }
 
-        .nav-links {
-            display: flex;
-            gap: 2.5rem;
+        .hero h1 {
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: var(--sidebar-bg);
         }
 
-        .nav-links a {
-            font-family: var(--font-subheading);
-            font-weight: 500;
+        .hero p {
+            font-size: 1.25rem;
             color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto 3rem;
         }
 
-        .nav-links a:hover {
-            color: var(--accent);
-        }
-
-        .features {
-            padding: 100px 0;
+        .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
         }
 
         .feature-card {
             padding: 2.5rem;
-            transition: 0.4s;
-            position: relative;
-            overflow: hidden;
+            text-align: left;
+            border-radius: 16px;
+            background: white;
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
         }
 
         .feature-card:hover {
-            transform: translateY(-10px) scale(1.02);
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
             border-color: var(--primary);
-            box-shadow: 0 10px 40px rgba(124, 58, 237, 0.2);
         }
 
-        .feature-card i {
-            font-size: 2.5rem;
-            color: var(--accent);
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--glass-accent);
+            color: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
             margin-bottom: 1.5rem;
-            display: block;
         }
 
-        .feature-card h3 {
-            margin-bottom: 1rem;
-            color: var(--text-main);
-        }
-
-        .feature-card p {
-            color: var(--text-muted);
-            line-height: 1.6;
-        }
-
-        .role-section {
-            padding: 80px 0;
+        .about-section {
+            padding: 100px 0;
+            background: var(--sidebar-bg);
+            color: white;
+            border-radius: 32px;
+            margin: 4rem 0;
             text-align: center;
         }
 
-        .role-grid {
+        .about-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
+            gap: 3rem;
             margin-top: 4rem;
+            padding: 0 4rem;
         }
 
-        .role-card {
-            padding: 2rem;
-            border-radius: 15px;
-            background: var(--glass-accent);
-            border: 1px solid var(--glass-border);
-            transition: 0.3s;
+        .stat-item h2 {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
         }
 
-        .role-card:hover {
-            background: rgba(124, 58, 237, 0.25);
-            border-color: var(--primary);
+        .stat-item p {
+            color: #94a3b8;
+            font-weight: 500;
         }
 
         @media (max-width: 768px) {
+            .nav {
+                padding: 1rem 2rem;
+            }
+
             .hero h1 {
-                font-size: 3rem;
+                font-size: 2.5rem;
             }
 
             .hero p {
-                font-size: 1.1rem;
-            }
-
-            .nav {
-                padding: 1rem 2rem;
+                font-size: 1rem;
             }
 
             .nav-links {
@@ -159,88 +125,103 @@
             }
         }
     </style>
-    <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
     <nav class="nav">
-        <div class="logo">CAMPUS<span class="neon-text">HUB</span></div>
-        <div class="nav-links">
-            <a href="#features">Features</a>
-            <a href="#roles">Roles</a>
-            <a href="#about">About</a>
+        <div class="logo"
+            style="display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 1.5rem; font-family: var(--font-heading);">
+            <i class="fas fa-graduation-cap" style="color: var(--primary);"></i>
+            <span>CAMPUS<span style="color: var(--primary);">HUB</span></span>
         </div>
-        <div>
-            <a href="views/login.html" class="btn-primary">Login</a>
+        <div class="nav-links" style="display: flex; gap: 2rem; font-weight: 500; color: var(--text-muted);">
+            <a href="#features">Features</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+            <a href="views/login.html" class="btn btn-secondary">Login</a>
+            <a href="views/signup.html" class="btn btn-primary">Join Now</a>
         </div>
     </nav>
 
     <main class="container">
-        <section class="hero animate-fade-in">
-            <h1>UNIFY YOUR <span class="neon-text">CAMPUS</span></h1>
-            <p>The AI-powered ecosystem connecting students, faculty, and administration into one seamless digital
-                experience. Academics, Library, Canteen, and Collaboration – all in one place.</p>
-            <div class="cta-container">
-                <a href="views/signup.html" class="btn-primary">Get Started</a>
-                <a href="#features" class="btn-primary"
-                    style="background: rgba(255, 255, 255, 0.05); color: var(--text-main); border: 1px solid var(--glass-border);">Learn
-                    More</a>
+        <section class="hero animate-in">
+            <span
+                style="background: var(--glass-accent); color: var(--primary); padding: 8px 16px; border-radius: 50px; font-size: 0.875rem; font-weight: 600; margin-bottom: 1rem; display: inline-block;">AI-Powered
+                Campus Ecosystem</span>
+            <h1>One Platform. <br> Every Campus Service.</h1>
+            <p>Streamlining academics, resources, and student life into a single, intuitive digital experience for the
+                modern university.</p>
+            <div style="display: flex; justify-content: center; gap: 1rem;">
+                <a href="#features" class="btn btn-primary" style="padding: 16px 32px; font-size: 1rem;">Explore
+                    Features</a>
+                <a href="#about" class="btn btn-secondary" style="padding: 16px 32px; font-size: 1rem;">Learn More</a>
             </div>
         </section>
 
-        <section id="features" class="features">
-            <div class="glass-card feature-card animate-fade-in">
-                <i class="fas fa-brain"></i>
-                <h3>AI Assistant</h3>
-                <p>An integrated AI chatbot to help with library status, study suggestions, and campus queries.</p>
+        <section id="features" class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-brain"></i></div>
+                <h3>AI-Driven Support</h3>
+                <p>Intelligent academic suggestions and instant campus queries powered by advanced AI models.</p>
             </div>
-            <div class="glass-card feature-card animate-fade-in" style="animation-delay: 0.2s;">
-                <i class="fas fa-book"></i>
-                <h3>Resource Hub</h3>
-                <p>Search books across campuses, reserve online, and access shared notes and materials.</p>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-book-reader"></i></div>
+                <h3>Digital Library</h3>
+                <p>Real-time book tracking, digital resource sharing, and reservation management at your fingertips.</p>
             </div>
-            <div class="glass-card feature-card animate-fade-in" style="animation-delay: 0.4s;">
-                <i class="fas fa-utensils"></i>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-hamburger"></i></div>
                 <h3>Smart Canteen</h3>
-                <p>Pre-order meals, skip the queue, and use QR codes for hassle-free order pickup.</p>
+                <p>Pre-order meals, manage digital payments, and use secure QR codes for hassle-free dining.</p>
             </div>
-            <div class="glass-card feature-card animate-fade-in" style="animation-delay: 0.6s;">
-                <i class="fas fa-users-viewfinder"></i>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-project-diagram"></i></div>
                 <h3>Collab Network</h3>
-                <p>Find teammates for hackathons, share project ideas, and map your skills to industry needs.</p>
+                <p>A dedicated space for students to find project partners and sync skills for hackathons.</p>
             </div>
         </section>
 
-        <section id="roles" class="role-section">
-            <h2 class="animate-fade-in">Who is <span class="neon-text">CampusHub</span> For?</h2>
-            <div class="role-grid">
-                <div class="role-card animate-fade-in">
-                    <i class="fas fa-user-graduate"></i>
-                    <h4>Student</h4>
+        <section id="about" class="about-section animate-in">
+            <h2 style="font-size: 2.5rem; margin-bottom: 1.5rem;">The Future of Campus Life</h2>
+            <p style="max-width: 800px; margin: 0 auto; color: #94a3b8; font-size: 1.1rem;">CampusHub was built with a
+                single mission: to remove the friction from university operations. By unifying silos into one
+                professional ecosystem, we empower students to focus on what matters—learning and growing.</p>
+
+            <div class="about-grid">
+                <div class="stat-item">
+                    <h2>10k+</h2>
+                    <p>Active Students</p>
                 </div>
-                <div class="role-card animate-fade-in">
-                    <i class="fas fa-chalkboard-teacher"></i>
-                    <h4>Faculty</h4>
+                <div class="stat-item">
+                    <h2>50+</h2>
+                    <p>Partner Campuses</p>
                 </div>
-                <div class="role-card animate-fade-in">
-                    <i class="fas fa-user-shield"></i>
-                    <h4>Admin</h4>
+                <div class="stat-item">
+                    <h2>100%</h2>
+                    <p>Secure Digital IDs</p>
                 </div>
-                <div class="role-card animate-fade-in">
-                    <i class="fas fa-book-reader"></i>
-                    <h4>Library</h4>
-                </div>
-                <div class="role-card animate-fade-in">
-                    <i class="fas fa-store"></i>
-                    <h4>Canteen</h4>
+                <div class="stat-item">
+                    <h2>AI</h2>
+                    <p>Personalized Learning</p>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer style="margin-top: 100px; padding: 50px; text-align: center; border-top: 1px solid var(--glass-border);">
-        <p>&copy; 2026 CampusHub. Built for the Future By: B.Harris Raj</p>
+    <footer style="padding: 4rem 0; border-top: 1px solid var(--border-light); margin-top: 4rem; text-align: center;">
+        <div class="container">
+            <div class="logo" style="justify-content: center; margin-bottom: 1.5rem;">
+                <i class="fas fa-graduation-cap" style="color: var(--primary);"></i>
+                <span style="font-weight: 800; font-size: 1.5rem;">CAMPUS<span
+                        style="color: var(--primary);">HUB</span></span>
+            </div>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">&copy; 2026 CampusHub Platform. All Rights
+                Reserved.</p>
+            <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 1rem;">Designed and Developed By: <span
+                    style="color: var(--text-main); font-weight: 600;">B.Harris Raj</span></p>
+        </div>
     </footer>
 
     <script src="js/main.js"></script>
